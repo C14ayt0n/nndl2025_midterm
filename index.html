@@ -73,9 +73,16 @@
 
         .app-sections {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             padding: 25px;
+        }
+
+        .section-row {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
         .section {
@@ -84,6 +91,7 @@
             padding: 25px;
             border: 1px solid #e9ecef;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 400px;
         }
 
         .section:hover {
@@ -322,9 +330,18 @@
             font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .app-sections {
                 grid-template-columns: 1fr;
+            }
+            
+            .section-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-sections {
                 padding: 15px;
             }
             
@@ -334,6 +351,7 @@
             
             .section {
                 padding: 20px;
+                min-height: auto;
             }
             
             .innovation-badge {
@@ -446,122 +464,133 @@
         </div>
 
         <div class="app-sections">
-            <!-- Data Load & EDA Section -->
-            <div class="section">
-                <h2>📊 Data Load & EDA</h2>
-                <div class="file-input-group">
-                    <label for="trainFile">📁 Training Data (CSV):</label>
-                    <input type="file" id="trainFile" accept=".csv">
-                </div>
-                <div class="file-input-group">
-                    <label for="testFile">📁 Test Data (CSV):</label>
-                    <input type="file" id="testFile" accept=".csv">
-                </div>
-                <button id="loadDataBtn" onclick="loadData()">
-                    📥 Load & Analyze Data
-                </button>
-                <div id="dataStatus" class="status"></div>
-                <div class="status insight" id="edaInsights">
-                    <strong>EDA Insights:</strong> Load data to see distribution analysis, missing values, and feature correlations
-                </div>
-                <div id="chartsContainer" class="charts-container">
-                    <div class="chart-controls" id="chartControls"></div>
-                    <div class="chart-display" id="chartDisplay">
-                        <p>Load data to see distributions</p>
+            <!-- First Row -->
+            <div class="section-row">
+                <!-- Data Load & EDA Section -->
+                <div class="section">
+                    <h2>📊 Data Load & EDA</h2>
+                    <div class="file-input-group">
+                        <label for="trainFile">📁 Training Data (CSV):</label>
+                        <input type="file" id="trainFile" accept=".csv">
                     </div>
+                    <div class="file-input-group">
+                        <label for="testFile">📁 Test Data (CSV):</label>
+                        <input type="file" id="testFile" accept=".csv">
+                    </div>
+                    <button id="loadDataBtn" onclick="loadData()">
+                        📥 Load & Analyze Data
+                    </button>
+                    <div id="dataStatus" class="status"></div>
+                    <div class="status insight" id="edaInsights">
+                        <strong>EDA Insights:</strong> Load data to see distribution analysis, missing values, and feature correlations
+                    </div>
+                    <div id="dataPreview" class="data-preview"></div>
                 </div>
-                <div id="dataPreview" class="data-preview"></div>
-            </div>
 
-            <!-- Preprocessing & Feature Engineering -->
-            <div class="section">
-                <h2>🔧 Smart Preprocessing</h2>
-                <button id="preprocessBtn" onclick="preprocessData()" disabled>
-                    ⚙️ Preprocess & Engineer Features
-                </button>
-                <div id="preprocessStatus" class="status"></div>
-                <div id="preprocessingDetails" class="preprocessing-details">
-                    Preprocessing details will appear here after processing
+                <!-- Preprocessing & Feature Engineering -->
+                <div class="section">
+                    <h2>🔧 Smart Preprocessing</h2>
+                    <button id="preprocessBtn" onclick="preprocessData()" disabled>
+                        ⚙️ Preprocess & Engineer Features
+                    </button>
+                    <div id="preprocessStatus" class="status"></div>
+                    <div id="preprocessingDetails" class="preprocessing-details">
+                        Preprocessing details will appear here after processing
+                    </div>
+                    <div id="featureInfo"></div>
                 </div>
-                <div id="featureInfo"></div>
-            </div>
 
-            <!-- Neural Network Model -->
-            <div class="section">
-                <h2>🧠 Neural Network</h2>
-                <button id="createModelBtn" onclick="createModel()" disabled>
-                    🏗️ Create Neural Network
-                </button>
-                <div id="modelStatus" class="status"></div>
-                <div id="modelSummary"></div>
-                <div class="status insight">
-                    <strong>Architecture:</strong> Single hidden layer (12 units) with dropout for regularization. Optimized for balanced performance and training speed.
+                <!-- Neural Network Model -->
+                <div class="section">
+                    <h2>🧠 Neural Network</h2>
+                    <button id="createModelBtn" onclick="createModel()" disabled>
+                        🏗️ Create Neural Network
+                    </button>
+                    <div id="modelStatus" class="status"></div>
+                    <div id="modelSummary"></div>
+                    <div class="status insight">
+                        <strong>Architecture:</strong> Single hidden layer (12 units) with dropout for regularization. Optimized for balanced performance and training speed.
+                    </div>
                 </div>
             </div>
 
-            <!-- Training & Optimization -->
-            <div class="section">
-                <h2>🎯 Training & Tuning</h2>
-                <button id="trainBtn" onclick="trainModel()" disabled>
-                    🚀 Train Model
-                </button>
-                <div id="trainingStatus" class="status"></div>
-                <div id="trainingProgress"></div>
-                <div class="status insight">
-                    <strong>Training Strategy:</strong> 20 epochs with 20% validation split. Real metrics calculated from validation data.
+            <!-- Second Row -->
+            <div class="section-row">
+                <!-- Training & Optimization -->
+                <div class="section">
+                    <h2>🎯 Training & Tuning</h2>
+                    <button id="trainBtn" onclick="trainModel()" disabled>
+                        🚀 Train Model
+                    </button>
+                    <div id="trainingStatus" class="status"></div>
+                    <div id="trainingProgress"></div>
+                    <div class="status insight">
+                        <strong>Training Strategy:</strong> 20 epochs with 20% validation split. Real metrics calculated from validation data.
+                    </div>
+                </div>
+
+                <!-- Advanced Analytics -->
+                <div class="section">
+                    <h2>📈 Advanced Analytics</h2>
+                    <div class="slider-container">
+                        <label>🎚️ Decision Threshold: <span id="thresholdValue">0.5</span></label>
+                        <input type="range" id="thresholdSlider" min="0" max="1" step="0.01" value="0.5" oninput="updateThreshold(this.value)">
+                        <small>Adjust to balance precision vs recall based on business needs</small>
+                    </div>
+                    <div class="metrics-display">
+                        <div class="metric">
+                            <div class="metric-value" id="accuracy">-</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="precision">-</div>
+                            <div class="metric-label">Precision</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="recall">-</div>
+                            <div class="metric-label">Recall</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="f1">-</div>
+                            <div class="metric-label">F1-Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-importance" id="featureImportance">
+                        <strong>Feature Importance:</strong> Will be calculated after training
+                    </div>
+                </div>
+
+                <!-- Prediction Section -->
+                <div class="section">
+                    <h2>🔮 Predictions</h2>
+                    <button id="predictBtn" onclick="predictTestData()" disabled class="btn-success">
+                        🎯 Predict Test Data
+                    </button>
+                    
+                    <button id="downloadPredictionsBtn" onclick="downloadPredictions()" disabled class="btn-warning">
+                        📥 Download Predictions
+                    </button>
+
+                    <button id="exportBtn" onclick="exportModelWeights()" disabled class="btn-innovation">
+                        💾 Export Model Weights
+                    </button>
+                    
+                    <div id="predictionStatus" class="status"></div>
+                    
+                    <div id="predictionResults" class="prediction-results"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Advanced Analytics -->
-            <div class="section">
-                <h2>📈 Advanced Analytics</h2>
-                <div class="slider-container">
-                    <label>🎚️ Decision Threshold: <span id="thresholdValue">0.5</span></label>
-                    <input type="range" id="thresholdSlider" min="0" max="1" step="0.01" value="0.5" oninput="updateThreshold(this.value)">
-                    <small>Adjust to balance precision vs recall based on business needs</small>
+        <!-- Charts Container (Full Width) -->
+        <div class="section" style="margin: 0 25px 25px 25px;">
+            <h2>📊 Data Visualization</h2>
+            <div id="chartsContainer" class="charts-container">
+                <div class="chart-controls" id="chartControls"></div>
+                <div class="chart-display" id="chartDisplay">
+                    <p>Load data to see distributions</p>
                 </div>
-                <div class="metrics-display">
-                    <div class="metric">
-                        <div class="metric-value" id="accuracy">-</div>
-                        <div class="metric-label">Accuracy</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value" id="precision">-</div>
-                        <div class="metric-label">Precision</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value" id="recall">-</div>
-                        <div class="metric-label">Recall</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value" id="f1">-</div>
-                        <div class="metric-label">F1-Score</div>
-                    </div>
-                </div>
-                
-                <div class="feature-importance" id="featureImportance">
-                    <strong>Feature Importance:</strong> Will be calculated after training
-                </div>
-
-                <button id="exportBtn" onclick="exportModelWeights()" disabled class="btn-innovation">
-                    💾 Export Model Weights
-                </button>
-            </div>
-
-            <!-- Prediction Section -->
-            <div class="section">
-                <h2>🔮 Predictions</h2>
-                <button id="predictBtn" onclick="predictTestData()" disabled class="btn-success">
-                    🎯 Predict Test Data
-                </button>
-                
-                <button id="downloadPredictionsBtn" onclick="downloadPredictions()" disabled class="btn-warning">
-                    📥 Download Predictions
-                </button>
-                
-                <div id="predictionStatus" class="status"></div>
-                
-                <div id="predictionResults" class="prediction-results"></div>
             </div>
         </div>
     </div>

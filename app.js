@@ -9,9 +9,8 @@ const SCHEMA = {
     quantitative: ['income', 'credit_score', 'loan_amount', 'years_employed', 'points'],
     qualitative: [],
     derivedFeatures: {
-        'debt_to_income': (row) => row.loan_amount / (row.income || 1),
-        'credit_utilization': (row) => row.points / 100,
-        'loan_to_income': (row) => row.loan_amount / (row.income || 1)
+        'debt_to_income': (row) => row.loan_amount / (row.income || 1)
+        // Removed credit_utilization and loan_to_income duplicates
     }
 };
 
@@ -603,15 +602,12 @@ function createModel() {
             ]
         });
         
-        // Use only supported metrics - 'accuracy' is the only standard metric in TensorFlow.js
         appState.model.compile({
             optimizer: tf.train.adam(0.001),
             loss: 'binaryCrossentropy',
             metrics: ['accuracy']
         });
         
-        const summary = [];
-        // Create a simple summary since model.summary() might not work consistently
         const totalParams = appState.model.countParams();
         
         elements.modelSummary().innerHTML = `
@@ -650,20 +646,27 @@ async function trainModel() {
         const batchSize = 32;
         const epochs = 20;
         
-        elements.trainingProgress().innerHTML = '<div style="margin: 10px 0;">Training progress will appear here...</div>';
+        elements.trainingProgress().innerHTML = '<div style="margin: 10px 0;">Training in progress... Please wait.</div>';
         
         const history = await appState.model.fit(features, targets, {
             epochs: epochs,
             batchSize: batchSize,
             validationSplit: validationSplit,
+            verbose: 0, // Reduced verbosity
             callbacks: {
                 onEpochEnd: (epoch, logs) => {
-                    const progress = `
-                        <div style="background: white; padding: 8px; margin: 5px 0; border-radius: 5px; border-left: 4px solid #3498db;">
-                            Epoch ${epoch + 1}/${epochs} - Loss: ${logs.loss.toFixed(4)} - Accuracy: ${logs.acc.toFixed(4)} - Val Loss: ${logs.val_loss.toFixed(4)} - Val Acc: ${logs.val_acc.toFixed(4)}
-                        </div>
-                    `;
-                    elements.trainingProgress().innerHTML += progress;
+                    // Only show final epoch to reduce noise
+                    if (epoch === epochs - 1) {
+                        elements.trainingProgress().innerHTML = `
+                            <div style="background: #d1f2eb; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <strong>Training Complete!</strong><br>
+                                Final Loss: ${logs.loss.toFixed(4)}<br>
+                                Final Accuracy: ${(logs.acc * 100).toFixed(1)}%<br>
+                                Validation Loss: ${logs.val_loss.toFixed(4)}<br>
+                                Validation Accuracy: ${(logs.val_acc * 100).toFixed(1)}%
+                            </div>
+                        `;
+                    }
                 }
             }
         });
@@ -732,27 +735,15 @@ function calculateAndDisplayMetrics() {
     document.getElementById('precision').textContent = precision.toFixed(3);
     document.getElementById('recall').textContent = recall.toFixed(3);
     document.getElementById('f1').textContent = f1.toFixed(3);
-    
-    const metricsStatus = `
-        <strong>📊 Real-time Metrics (Threshold: ${threshold}):</strong><br>
-        • True Positives: ${truePositives}<br>
-        • False Positives: ${falsePositives}<br>
-        • True Negatives: ${trueNegatives}<br>
-        • False Negatives: ${falseNegatives}<br>
-        • Total Samples: ${binaryPredictions.length}
-    `;
-    
-    elements.trainingStatus().innerHTML += `<div style="margin-top: 10px;">${metricsStatus}</div>`;
 }
 
 function calculateFeatureImportance() {
     if (!appState.model || !appState.processedData) return;
     
-    // Simplified feature importance calculation
     const importanceScores = [];
     const numFeatures = appState.processedData.featureNames.length;
     
-    // Calculate correlation-based importance as a fallback
+    // Calculate correlation-based importance
     const features = appState.processedData.features;
     const targets = appState.processedData.targets;
     

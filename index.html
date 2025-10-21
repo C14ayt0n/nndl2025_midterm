@@ -537,6 +537,12 @@
                     <div class="status insight">
                         <strong>Architecture:</strong> Single hidden layer (12 units) with dropout for regularization.
                     </div>
+
+                    <div class="file-input-group">
+                        <label for="importModel">📁 Import Model:</label>
+                        <input type="file" id="importModel" accept=".json" onchange="importModel(event)">
+                    </div>
+                    
                 </div>
 
                 <!-- Training & Optimization -->
@@ -585,9 +591,9 @@
                     <div class="feature-importance" id="featureImportance">
                         <strong>Feature Importance:</strong> Will be calculated after training
                     </div>
-
-                    <button id="exportBtn" onclick="exportModelWeights()" disabled class="btn-innovation">
-                        💾 Export Model Weights
+                    
+                    <button id="exportBtn" onclick="exportModel()" disabled class="btn-innovation">
+                        💾 Export Full Model
                     </button>
                 </div>
 

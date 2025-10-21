@@ -1,4 +1,5 @@
 Loan Approval AI: Excellence Across All Evaluation Criteria
+
 Data Selection & EDA
 The application implements comprehensive automated EDA with interactive visualizations including target distribution analysis, feature histograms, and missing value detection. The system validates dataset schema compliance and provides detailed statistical insights - calculating approval rates, distribution metrics, and business-relevant patterns. Real-time data preview with 10-sample display ensures transparency in data handling and preprocessing decisions.
 
